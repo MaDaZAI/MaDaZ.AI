@@ -1,0 +1,967 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MaDaZ AI — MaDaZ-AI · 07</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=Space+Mono:wght@400;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --black: #020408;
+    --deep: #050d18;
+    --cyan: #00d4ff;
+    --gold: #f0c040;
+    --green: #4ade80;
+    --white: #f0f4ff;
+    --gray: #8899aa;
+    --border: rgba(0,212,255,0.12);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--black);
+    color: var(--white);
+    font-family: 'Inter', sans-serif;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image:
+      linear-gradient(rgba(0,212,255,0.025) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,212,255,0.025) 1px, transparent 1px);
+    background-size: 60px 60px;
+    pointer-events: none; z-index: 0;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 18px 60px;
+    background: rgba(2,4,8,0.88);
+    backdrop-filter: blur(24px);
+    border-bottom: 1px solid var(--border);
+  }
+  .nav-logo { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1.3rem; letter-spacing: 3px; text-transform: uppercase; }
+  .nav-logo span { color: var(--cyan); }
+  .nav-links { display: flex; gap: 36px; list-style: none; }
+  .nav-links a {
+    color: var(--gray); text-decoration: none; font-size: 0.72rem;
+    letter-spacing: 2px; text-transform: uppercase;
+    font-family: 'Space Mono', monospace; transition: color 0.3s; position: relative;
+  }
+  .nav-links a::after {
+    content: ''; position: absolute; bottom: -4px; left: 0; right: 0;
+    height: 1px; background: var(--cyan); transform: scaleX(0); transition: transform 0.3s;
+  }
+  .nav-links a:hover { color: var(--white); }
+  .nav-links a:hover::after, .nav-links a.active::after { transform: scaleX(1); }
+  .nav-links a.active { color: var(--white); }
+  .nav-cta {
+    background: transparent; border: 1px solid var(--cyan); color: var(--cyan);
+    padding: 9px 22px; font-family: 'Space Mono', monospace; font-size: 0.72rem;
+    letter-spacing: 1.5px; cursor: pointer; transition: all 0.3s; text-transform: uppercase;
+  }
+  .nav-cta:hover { background: var(--cyan); color: var(--black); }
+
+  /* HERO */
+  .hero {
+    padding: 140px 60px 60px;
+    position: relative; z-index: 1;
+    display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center;
+  }
+  .hero-tag {
+    display: inline-flex; align-items: center; gap: 10px;
+    background: rgba(0,212,255,0.07); border: 1px solid rgba(0,212,255,0.25);
+    padding: 7px 18px; font-family: 'Space Mono', monospace;
+    font-size: 0.65rem; letter-spacing: 2.5px; color: var(--cyan);
+    margin-bottom: 30px; text-transform: uppercase;
+  }
+  .hero h1 {
+    font-family: 'Syne', sans-serif; font-weight: 800;
+    font-size: clamp(2.4rem, 4vw, 3.8rem); line-height: 1.1;
+    margin-bottom: 14px; letter-spacing: -1px;
+  }
+  .hero h1 span { color: var(--cyan); }
+  .hero-sub { font-family: 'Space Mono', monospace; font-size: 0.85rem; color: var(--gold); letter-spacing: 1px; margin-bottom: 20px; }
+  .hero-desc { font-size: 0.95rem; color: rgba(240,244,255,0.65); line-height: 1.8; font-weight: 300; }
+
+  /* DIAGRAM */
+  .diagram-wrap {
+    position: relative; z-index: 1;
+    padding: 70px 60px;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    background: rgba(0,212,255,0.012);
+    overflow: hidden;
+  }
+
+  .diagram-eyebrow {
+    font-family: 'Space Mono', monospace; font-size: 0.65rem;
+    letter-spacing: 3px; color: var(--cyan); text-transform: uppercase;
+    text-align: center; margin-bottom: 50px;
+    display: flex; align-items: center; justify-content: center; gap: 12px;
+  }
+  .diagram-eyebrow::before, .diagram-eyebrow::after { content: ''; width: 50px; height: 1px; background: var(--cyan); }
+
+  .diagram-canvas {
+    max-width: 960px; margin: 0 auto;
+    position: relative;
+  }
+
+  /* LLM CORE */
+  .llm-core {
+    position: relative;
+    margin: 0 auto 0;
+    width: fit-content;
+    text-align: center;
+  }
+
+  .llm-box {
+    display: inline-flex; flex-direction: column; align-items: center;
+    background: linear-gradient(135deg, rgba(0,212,255,0.1), rgba(0,212,255,0.04));
+    border: 2px solid var(--cyan);
+    padding: 20px 48px;
+    position: relative;
+    animation: coreGlow 3s ease-in-out infinite;
+  }
+
+  @keyframes coreGlow {
+    0%,100% { box-shadow: 0 0 20px rgba(0,212,255,0.15), inset 0 0 20px rgba(0,212,255,0.05); }
+    50% { box-shadow: 0 0 50px rgba(0,212,255,0.3), inset 0 0 30px rgba(0,212,255,0.1); }
+  }
+
+  .llm-tag {
+    font-family: 'Space Mono', monospace; font-size: 0.58rem;
+    color: var(--cyan); letter-spacing: 3px; text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+
+  .llm-name {
+    font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1.3rem;
+    color: var(--white); letter-spacing: 2px; margin-bottom: 4px;
+  }
+  .llm-name span { color: var(--cyan); }
+
+  .llm-spec {
+    font-family: 'Space Mono', monospace; font-size: 0.62rem;
+    color: rgba(0,212,255,0.7); letter-spacing: 1px;
+  }
+
+  /* SVG connector area */
+  .diagram-svg {
+    width: 100%; height: 80px; display: block;
+    overflow: visible;
+  }
+
+  /* AGENTS ROW */
+  .agents-layer {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 40px; margin-top: 0;
+  }
+
+  .agent-col {
+    display: flex; flex-direction: column; align-items: center; gap: 0;
+  }
+
+  .agent-box {
+    width: 100%;
+    background: var(--deep);
+    border: 1px solid rgba(0,212,255,0.35);
+    padding: 16px 24px;
+    text-align: center;
+    position: relative;
+    transition: all 0.3s;
+    cursor: default;
+  }
+
+  .agent-box:hover {
+    border-color: var(--cyan);
+    background: rgba(0,212,255,0.07);
+    box-shadow: 0 0 25px rgba(0,212,255,0.15);
+  }
+
+  .agent-box::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0; height: 2px;
+    background: var(--cyan);
+    transform: scaleX(0); transition: transform 0.3s;
+  }
+  .agent-box:hover::before { transform: scaleX(1); }
+
+  .agent-role-tag {
+    font-family: 'Space Mono', monospace; font-size: 0.58rem;
+    color: var(--cyan); letter-spacing: 2px; text-transform: uppercase;
+    margin-bottom: 5px; display: block;
+  }
+
+  .agent-name {
+    font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1rem;
+    color: var(--white); letter-spacing: 1px;
+  }
+
+  /* SHARED INFRA */
+  .infra-connector-row {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 40px;
+  }
+
+  .infra-line {
+    display: flex; justify-content: center;
+  }
+
+  .infra-line-inner {
+    width: 2px; height: 32px;
+    background: linear-gradient(to bottom, rgba(0,212,255,0.4), rgba(0,212,255,0.15));
+    position: relative;
+    overflow: hidden;
+  }
+
+  .infra-line-inner::after {
+    content: '';
+    position: absolute; top: -100%; left: 0; right: 0; height: 100%;
+    background: linear-gradient(to bottom, transparent, var(--cyan), transparent);
+    animation: flowPulse 2s linear infinite;
+  }
+
+  @keyframes flowPulse {
+    0% { top: -100%; }
+    100% { top: 100%; }
+  }
+
+  /* ASSISTANTS GRID */
+  .assistants-layer {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 40px;
+  }
+
+  .assistants-group {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+
+  .assist-node {
+    background: rgba(5,13,24,0.9);
+    border: 1px solid rgba(0,212,255,0.18);
+    padding: 12px 10px; text-align: center;
+    position: relative; cursor: default;
+    transition: all 0.3s;
+  }
+
+  .assist-node:hover {
+    border-color: rgba(0,212,255,0.5);
+    background: rgba(0,212,255,0.06);
+    transform: translateY(-2px);
+  }
+
+  .assist-icon { font-size: 1.1rem; display: block; margin-bottom: 5px; }
+
+  .assist-name {
+    font-family: 'Space Mono', monospace; font-size: 0.62rem;
+    color: var(--gray); letter-spacing: 1px; display: block;
+    transition: color 0.3s;
+  }
+  .assist-node:hover .assist-name { color: var(--cyan); }
+
+  .assist-tooltip {
+    position: absolute; bottom: calc(100% + 8px); left: 50%;
+    transform: translateX(-50%);
+    background: rgba(2,4,8,0.98); border: 1px solid var(--cyan);
+    padding: 7px 12px; white-space: nowrap;
+    font-family: 'Space Mono', monospace; font-size: 0.6rem;
+    color: var(--white); pointer-events: none;
+    opacity: 0; transition: opacity 0.25s; z-index: 20;
+  }
+  .assist-tooltip::after {
+    content: ''; position: absolute; top: 100%; left: 50%;
+    transform: translateX(-50%);
+    border: 5px solid transparent;
+    border-top-color: var(--cyan);
+  }
+  .assist-node:hover .assist-tooltip { opacity: 1; }
+
+  /* SHARED label */
+  .shared-badge {
+    text-align: center; margin-top: 24px;
+    font-family: 'Space Mono', monospace; font-size: 0.6rem;
+    color: rgba(0,212,255,0.4); letter-spacing: 2px; text-transform: uppercase;
+  }
+
+  /* DATA FLOW label */
+  .data-flow-bar {
+    margin-top: 32px;
+    background: rgba(0,212,255,0.04);
+    border: 1px solid rgba(0,212,255,0.15);
+    padding: 14px 24px;
+    display: flex; align-items: center; justify-content: center; gap: 24px;
+    flex-wrap: wrap;
+  }
+
+  .flow-item {
+    display: flex; align-items: center; gap: 8px;
+    font-family: 'Space Mono', monospace; font-size: 0.65rem;
+    color: var(--gray); letter-spacing: 1px;
+  }
+
+  .flow-dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--cyan);
+    animation: pulseDot 2s ease-in-out infinite;
+  }
+
+  .flow-dot.gold { background: var(--gold); animation-delay: 0.5s; }
+  .flow-dot.green { background: var(--green); animation-delay: 1s; }
+
+  @keyframes pulseDot {
+    0%,100% { opacity: 0.3; transform: scale(0.8); }
+    50% { opacity: 1; transform: scale(1.3); box-shadow: 0 0 6px currentColor; }
+  }
+
+  /* SECTIONS */
+  section { padding: 70px 60px; position: relative; z-index: 1; }
+  section.alt { background: rgba(0,212,255,0.015); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+
+  .sec-header { margin-bottom: 40px; }
+  .eyebrow {
+    font-family: 'Space Mono', monospace; font-size: 0.65rem;
+    letter-spacing: 3px; color: var(--cyan); text-transform: uppercase;
+    display: flex; align-items: center; gap: 12px; margin-bottom: 10px;
+  }
+  .eyebrow::before { content: ''; width: 30px; height: 1px; background: var(--cyan); }
+
+  .sec-title {
+    font-family: 'Syne', sans-serif; font-weight: 800;
+    font-size: clamp(1.6rem, 2.5vw, 2.2rem); color: var(--white); margin-bottom: 8px;
+  }
+  .sec-title span { color: var(--cyan); }
+  .sec-sub { font-size: 0.88rem; color: rgba(240,244,255,0.55); line-height: 1.7; font-weight: 300; }
+
+  /* STEPS */
+  .steps {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 1px; background: var(--border); border: 1px solid var(--border);
+  }
+  .steps-4 {
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    gap: 1px; background: var(--border); border: 1px solid var(--border);
+  }
+  .step { background: var(--deep); padding: 36px 30px; position: relative; overflow: hidden; transition: background 0.3s; }
+  .step:hover { background: rgba(0,212,255,0.04); }
+  .step-num {
+    font-family: 'Syne', sans-serif; font-weight: 800; font-size: 3.5rem;
+    color: rgba(0,212,255,0.07); position: absolute; top: 12px; right: 16px; line-height: 1;
+  }
+  .step-icon { font-size: 1.5rem; margin-bottom: 16px; display: block; }
+  .step-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1rem; margin-bottom: 10px; color: var(--white); }
+  .step-title span { color: var(--cyan); }
+  .step-desc { font-size: 0.83rem; color: var(--gray); line-height: 1.7; }
+  .step-note {
+    margin-top: 12px; padding: 8px 12px;
+    background: rgba(0,212,255,0.06); border-left: 2px solid var(--cyan);
+    font-family: 'Space Mono', monospace; font-size: 0.65rem; color: var(--cyan); letter-spacing: 0.5px;
+  }
+
+  /* SECURITY */
+  .security-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--border); border: 1px solid var(--border); }
+  .sec-card { background: var(--deep); padding: 30px 28px; display: flex; gap: 18px; transition: background 0.3s; }
+  .sec-card:hover { background: rgba(0,212,255,0.04); }
+  .sec-icon { font-size: 1.6rem; flex-shrink: 0; margin-top: 2px; }
+  .sec-card-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.9rem; margin-bottom: 6px; color: var(--white); }
+  .sec-card-desc { font-size: 0.82rem; color: var(--gray); line-height: 1.65; }
+
+  /* MONITOR */
+  .monitor-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+  .monitor-wrap {}
+  .monitor-label { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.85rem; color: var(--white); margin-bottom: 10px; }
+  .monitor-note { font-size: 0.78rem; color: var(--gray); line-height: 1.6; font-style: italic; margin-top: 10px; }
+
+  .monitor-box {
+    background: rgba(5,13,24,0.95); border: 1px solid var(--border); border-radius: 6px;
+    overflow: hidden; box-shadow: 0 0 30px rgba(0,212,255,0.06);
+  }
+  .monitor-header {
+    background: rgba(0,212,255,0.04); padding: 10px 16px;
+    display: flex; align-items: center; gap: 8px; border-bottom: 1px solid var(--border);
+  }
+  .dot { width: 10px; height: 10px; border-radius: 50%; }
+  .dot.r { background: #ff5f57; } .dot.y { background: #ffbd2e; } .dot.g { background: #28ca41; }
+  .monitor-title { font-family: 'Space Mono', monospace; font-size: 0.62rem; color: var(--cyan); margin-left: 6px; letter-spacing: 1px; }
+  .monitor-body { padding: 18px 20px; font-family: 'Space Mono', monospace; font-size: 0.68rem; line-height: 1.9; }
+  .ml { display: block; }
+  .mc { color: var(--cyan); } .mg { color: var(--green); } .mw { color: var(--gold); } .md { color: var(--gray); }
+
+  .cursor { display: inline-block; width: 7px; height: 12px; background: var(--cyan); animation: blink 1s infinite; vertical-align: middle; }
+  @keyframes blink { 0%,49%{opacity:1} 50%,100%{opacity:0} }
+
+  /* ANALYSIS */
+  .analysis-box {
+    background: rgba(5,13,24,0.95); border: 1px solid var(--border);
+    border-radius: 6px; overflow: hidden;
+  }
+  .analysis-header {
+    background: rgba(0,212,255,0.05); padding: 14px 24px;
+    border-bottom: 1px solid var(--border);
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .analysis-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.88rem; color: var(--white); }
+  .analysis-badge {
+    font-family: 'Space Mono', monospace; font-size: 0.62rem; color: var(--gold);
+    letter-spacing: 2px; background: rgba(240,196,64,0.1);
+    border: 1px solid rgba(240,196,64,0.3); padding: 4px 12px;
+  }
+  .analysis-body { display: grid; grid-template-columns: 1fr 1fr; }
+  .analysis-col { padding: 24px; border-right: 1px solid var(--border); }
+  .analysis-col:last-child { border-right: none; }
+  .analysis-col-title { font-family: 'Space Mono', monospace; font-size: 0.6rem; color: var(--cyan); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 14px; }
+  .analysis-item {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 7px 0; border-bottom: 1px solid rgba(240,244,255,0.04);
+    font-family: 'Space Mono', monospace; font-size: 0.66rem;
+  }
+  .analysis-item:last-child { border-bottom: none; }
+  .ai-label { color: var(--gray); } .ai-val { color: var(--white); }
+  .ai-val.green { color: var(--green); } .ai-val.red { color: #f87171; } .ai-val.gold { color: var(--gold); }
+
+  .decision-bar {
+    padding: 18px 24px; border-top: 1px solid var(--border);
+    display: flex; align-items: center; gap: 20px;
+    background: rgba(240,196,64,0.04);
+  }
+  .decision-label { font-family: 'Space Mono', monospace; font-size: 0.62rem; color: var(--gray); letter-spacing: 2px; text-transform: uppercase; }
+  .decision-val { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1.2rem; color: var(--gold); letter-spacing: 2px; }
+  .decision-note { font-size: 0.76rem; color: var(--gray); margin-left: auto; font-style: italic; }
+
+  /* CTA */
+  .cta-section {
+    padding: 70px 60px; position: relative; z-index: 1;
+    display: flex; justify-content: space-between; align-items: center; gap: 40px;
+    border-top: 1px solid var(--border);
+  }
+  .cta-title { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1.8rem; margin-bottom: 8px; }
+  .cta-title span { color: var(--cyan); }
+  .cta-sub { font-family: 'Space Mono', monospace; font-size: 0.7rem; color: var(--gray); letter-spacing: 1px; }
+  .cta-btns { display: flex; gap: 16px; flex-shrink: 0; }
+
+  .btn-primary {
+    background: var(--cyan); color: var(--black); padding: 13px 32px;
+    font-family: 'Space Mono', monospace; font-size: 0.78rem; font-weight: 700;
+    letter-spacing: 1px; border: none; cursor: pointer; transition: all 0.25s;
+    text-decoration: none; display: inline-block; text-transform: uppercase;
+  }
+  .btn-primary:hover { background: var(--white); transform: translateY(-2px); }
+  .btn-ghost {
+    color: var(--gray); font-family: 'Space Mono', monospace; font-size: 0.75rem;
+    letter-spacing: 1px; text-decoration: none;
+    border-bottom: 1px solid rgba(136,153,170,0.4); padding-bottom: 3px;
+    transition: all 0.3s; text-transform: uppercase; display: flex; align-items: center;
+  }
+  .btn-ghost:hover { color: var(--white); border-color: var(--white); }
+
+  /* FOOTER */
+  footer {
+    padding: 28px 60px; border-top: 1px solid var(--border);
+    display: flex; justify-content: space-between; align-items: center;
+    position: relative; z-index: 1;
+  }
+  .footer-logo { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 0.95rem; letter-spacing: 3px; text-transform: uppercase; }
+  .footer-logo span { color: var(--cyan); }
+  .footer-links { display: flex; gap: 28px; list-style: none; }
+  .footer-links a { color: var(--gray); text-decoration: none; font-family: 'Space Mono', monospace; font-size: 0.65rem; letter-spacing: 1.5px; text-transform: uppercase; transition: color 0.3s; }
+  .footer-links a:hover { color: var(--white); }
+  .footer-right { font-family: 'Space Mono', monospace; font-size: 0.62rem; color: var(--gray); }
+
+  .page-indicator {
+    position: fixed; bottom: 28px; right: 28px;
+    background: rgba(2,4,8,0.9); border: 1px solid var(--border);
+    padding: 8px 16px; font-family: 'Space Mono', monospace;
+    font-size: 0.6rem; color: var(--cyan); letter-spacing: 2px; z-index: 100; text-transform: uppercase;
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">MaDaZ <span>AI</span></div>
+  <ul class="nav-links">
+    <li><a href="#">Home</a></li>
+    <li><a href="#" class="active">MaDaZ-AI</a></li>
+    <li><a href="#">MaDaZ-AGI</a></li>
+    <li><a href="#">Investors</a></li>
+    <li><a href="#">Trial</a></li>
+  </ul>
+  <button class="nav-cta">Request Trial</button>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div>
+    <div class="hero-tag">// MaDaZ-AI · 07</div>
+    <h1>Your Personal<br><span>Sovereign</span><br>Trading Agent</h1>
+    <p class="hero-sub">Built by a trader, for traders.</p>
+    <p class="hero-desc">07 is not a bot. It's a fully integrated multi-agent intelligence system that monitors markets, analyzes signals, and executes trades — continuously, without emotion, without fatigue.</p>
+  </div>
+  <div style="display:flex;flex-direction:column;gap:16px;">
+    <div style="background:rgba(0,212,255,0.05);border:1px solid var(--border);padding:28px 30px;">
+      <div style="font-family:'Space Mono',monospace;font-size:0.62rem;color:var(--cyan);letter-spacing:2px;margin-bottom:16px;">// SYSTEM IDENTITY</div>
+      <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:0.95rem;color:var(--white);margin-bottom:6px;">MaDaZ-AI Multi-Agent System</div>
+      <div style="font-size:0.82rem;color:var(--gray);line-height:1.7;">An intelligent ecosystem where specialized agents collaborate to analyze markets, execute trades, and protect capital — operating 24/7 with institutional precision.</div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border);">
+      <div style="background:var(--deep);padding:20px 24px;">
+        <div style="font-family:'Space Mono',monospace;font-size:0.6rem;color:var(--gray);letter-spacing:1px;margin-bottom:6px;">LIVE TRADES</div>
+        <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:1.8rem;color:var(--white);">100<span style="color:var(--cyan);">+</span></div>
+      </div>
+      <div style="background:var(--deep);padding:20px 24px;">
+        <div style="font-family:'Space Mono',monospace;font-size:0.6rem;color:var(--gray);letter-spacing:1px;margin-bottom:6px;">WIN RATE</div>
+        <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:1.8rem;color:var(--white);">60<span style="color:var(--cyan);">%+</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DIAGRAM -->
+<div class="diagram-wrap">
+  <div class="diagram-eyebrow">// Agent Architecture</div>
+  <div class="diagram-canvas">
+
+    <!-- LLM CORE -->
+    <div class="llm-core">
+      <div class="llm-box">
+        <span class="llm-tag">// Sovereign LLM · 8B Parameters</span>
+        <div class="llm-name">MaDaZ<span>-AI</span> · 07</div>
+        <div class="llm-spec">Fine-tuned on 1M+ tokens of proprietary system data · ~8K token engineering prompt per cycle</div>
+      </div>
+    </div>
+
+    <!-- SVG CONNECTORS -->
+    <svg class="diagram-svg" viewBox="0 0 960 80" preserveAspectRatio="none">
+      <!-- vertical down from center -->
+      <line x1="480" y1="0" x2="480" y2="40" stroke="rgba(0,212,255,0.4)" stroke-width="1.5" stroke-dasharray="4,3">
+        <animate attributeName="stroke-dashoffset" values="0;-14" dur="1s" repeatCount="indefinite"/>
+      </line>
+      <!-- horizontal bar -->
+      <line x1="240" y1="40" x2="720" y2="40" stroke="rgba(0,212,255,0.35)" stroke-width="1.5">
+        <animate attributeName="opacity" values="0.35;0.7;0.35" dur="2s" repeatCount="indefinite"/>
+      </line>
+      <!-- down to buyer -->
+      <line x1="240" y1="40" x2="240" y2="80" stroke="rgba(0,212,255,0.4)" stroke-width="1.5" stroke-dasharray="4,3">
+        <animate attributeName="stroke-dashoffset" values="0;-14" dur="1s" repeatCount="indefinite"/>
+      </line>
+      <!-- down to seller -->
+      <line x1="720" y1="40" x2="720" y2="80" stroke="rgba(0,212,255,0.4)" stroke-width="1.5" stroke-dasharray="4,3">
+        <animate attributeName="stroke-dashoffset" values="0;-14" dur="1s" repeatCount="indefinite"/>
+      </line>
+      <!-- pulse dots -->
+      <circle r="4" fill="#00d4ff" opacity="0.8">
+        <animateMotion dur="1.5s" repeatCount="indefinite" path="M480,0 L480,40 L240,40 L240,80"/>
+      </circle>
+      <circle r="4" fill="#00d4ff" opacity="0.8">
+        <animateMotion dur="1.5s" repeatCount="indefinite" begin="0.75s" path="M480,0 L480,40 L720,40 L720,80"/>
+      </circle>
+    </svg>
+
+    <!-- AGENTS -->
+    <div class="agents-layer">
+      <div class="agent-col">
+        <div class="agent-box">
+          <span class="agent-role-tag">// Buyer Agent</span>
+          <div class="agent-name">07 Buyer</div>
+        </div>
+      </div>
+      <div class="agent-col">
+        <div class="agent-box">
+          <span class="agent-role-tag">// Seller Agent</span>
+          <div class="agent-name">07 Seller</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- INFRA CONNECTORS -->
+    <div class="infra-connector-row">
+      <div class="infra-line"><div class="infra-line-inner"></div></div>
+      <div class="infra-line"><div class="infra-line-inner"></div></div>
+    </div>
+
+    <!-- ASSISTANTS -->
+    <div class="assistants-layer">
+      <div class="assistants-group">
+        <div class="assist-node">
+          <span class="assist-icon">📡</span>
+          <span class="assist-name">Collector</span>
+          <div class="assist-tooltip">Gathers & organizes market data across all timeframes</div>
+        </div>
+        <div class="assist-node">
+          <span class="assist-icon">👁️</span>
+          <span class="assist-name">Watcher</span>
+          <div class="assist-tooltip">The eye & guardian — monitors signals & activates trailing</div>
+        </div>
+        <div class="assist-node">
+          <span class="assist-icon">⚡</span>
+          <span class="assist-name">Tasker</span>
+          <div class="assist-tooltip">Task distributor & operations executor</div>
+        </div>
+        <div class="assist-node">
+          <span class="assist-icon">📊</span>
+          <span class="assist-name">Accountant</span>
+          <div class="assist-tooltip">The market map drawer — tracks P&L & trade history</div>
+        </div>
+      </div>
+      <div class="assistants-group">
+        <div class="assist-node">
+          <span class="assist-icon">📡</span>
+          <span class="assist-name">Collector</span>
+          <div class="assist-tooltip">Gathers & organizes market data across all timeframes</div>
+        </div>
+        <div class="assist-node">
+          <span class="assist-icon">👁️</span>
+          <span class="assist-name">Watcher</span>
+          <div class="assist-tooltip">The eye & guardian — monitors signals & activates trailing</div>
+        </div>
+        <div class="assist-node">
+          <span class="assist-icon">⚡</span>
+          <span class="assist-name">Tasker</span>
+          <div class="assist-tooltip">Task distributor & operations executor</div>
+        </div>
+        <div class="assist-node">
+          <span class="assist-icon">📊</span>
+          <span class="assist-name">Accountant</span>
+          <div class="assist-tooltip">The market map drawer — tracks P&L & trade history</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- DATA FLOW BAR -->
+    <div class="data-flow-bar">
+      <div class="flow-item"><div class="flow-dot"></div>4H · 1H · 15M · 5M Candles</div>
+      <div class="flow-item"><div class="flow-dot gold"></div>MACD · EMA · SAR · OBV · ROC</div>
+      <div class="flow-item"><div class="flow-dot green"></div>Memory · Trade History · Live Price</div>
+      <div class="flow-item" style="color:var(--cyan);border-left:1px solid var(--border);padding-left:24px;">~8,000 tokens per analysis cycle</div>
+    </div>
+
+  </div>
+</div>
+
+<!-- HOW IT WORKS -->
+<section>
+  <div class="sec-header">
+    <div class="eyebrow">How It Works</div>
+    <h2 class="sec-title">Three steps. <span>Zero code.</span></h2>
+    <p class="sec-sub">From launch to live trading — no technical knowledge required.</p>
+  </div>
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">01</div>
+      <span class="step-icon">🔌</span>
+      <div class="step-title"><span>Connect</span> — Launch MiniShell</div>
+      <p class="step-desc">Run MiniShell — our custom secure gateway. New user? Enter your Binance API keys once. Existing user? Your private Docker container launches automatically.</p>
+      <div class="step-note">⚠ Read + Instant Trade only. No withdrawal. No transfer.</div>
+    </div>
+    <div class="step">
+      <div class="step-num">02</div>
+      <span class="step-icon">⚙️</span>
+      <div class="step-title"><span>Configure</span> — Draw 07's Mind</div>
+      <p class="step-desc">Choose your trading pair, investment amount, strategy, indicators, and timeframe per indicator. These choices shape how 07 thinks and when it acts.</p>
+      <div class="step-note">✦ Same indicators, different timeframes = completely different trading personality.</div>
+    </div>
+    <div class="step">
+      <div class="step-num">03</div>
+      <span class="step-icon">🤖</span>
+      <div class="step-title"><span>Watch</span> — Let 07 Trade</div>
+      <p class="step-desc">Smart Monitor activates. 4 agents run silently in the background. 07 Buyer hunts entries. 07 Seller manages exits with dual-trailing logic. You watch. 07 works.</p>
+      <div class="step-note">✦ Telegram alerts keep you informed in real time.</div>
+    </div>
+  </div>
+</section>
+
+<!-- SECURITY -->
+<section class="alt">
+  <div class="sec-header">
+    <div class="eyebrow">Security Architecture</div>
+    <h2 class="sec-title">Your keys. <span>Your container.</span> Your control.</h2>
+    <p class="sec-sub">Every user operates in a fully isolated environment. No shared access. No exceptions.</p>
+  </div>
+  <div class="security-grid">
+    <div class="sec-card">
+      <div class="sec-icon">🐳</div>
+      <div>
+        <div class="sec-card-title">Private Docker Container</div>
+        <p class="sec-card-desc">Each user gets a dedicated, isolated Docker container with their own copy of the system. Your data, your keys, your logic — completely separate.</p>
+      </div>
+    </div>
+    <div class="sec-card">
+      <div class="sec-icon">🔑</div>
+      <div>
+        <div class="sec-card-title">Read + Trade Only</div>
+        <p class="sec-card-desc">We only request Read and Instant Trade API permissions. Withdrawal and transfer are never requested — we strongly recommend disabling them on Binance too.</p>
+      </div>
+    </div>
+    <div class="sec-card">
+      <div class="sec-icon">🛡️</div>
+      <div>
+        <div class="sec-card-title">Zero Shared Access</div>
+        <p class="sec-card-desc">No user can see another user's data, trades, or configurations. The MiniShell gateway ensures all sessions are authenticated and fully isolated.</p>
+      </div>
+    </div>
+    <div class="sec-card">
+      <div class="sec-icon">☁️</div>
+      <div>
+        <div class="sec-card-title">Cloud-Powered Infrastructure</div>
+        <p class="sec-card-desc">Running on Azure. Agent communication via Azure Service Bus. You control your container. We control nothing about your funds.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SMART MONITOR -->
+<section>
+  <div class="sec-header">
+    <div class="eyebrow">Smart Monitor</div>
+    <h2 class="sec-title">Real-time intelligence. <span>Always watching.</span></h2>
+    <p class="sec-sub">Two monitors. Two agents. 07 Buyer hunts entries. 07 Seller protects profits.</p>
+  </div>
+  <div class="monitor-grid">
+    <div class="monitor-wrap">
+      <div class="monitor-label">07 Buyer — Waiting for Entry Signal</div>
+      <div class="monitor-box">
+        <div class="monitor-header">
+          <div class="dot r"></div><div class="dot y"></div><div class="dot g"></div>
+          <span class="monitor-title">Smart Monitor | DOGEUSDT | BUYER AGENT</span>
+        </div>
+        <div class="monitor-body">
+          <span class="ml mc">══════════════════════════════════</span>
+          <span class="ml mw">--- WAITING FOR SIGNAL ---</span>
+          <span class="ml md">👀 Position: Inactive</span>
+          <span class="ml mg">📈 Current Price: 0.09443 USDT</span>
+          <span class="ml mc">══════════════════════════════════</span>
+          <span class="ml md">👀 [Watcher] Monitoring market...</span>
+          <span class="ml md">⏱️ [Collector] Data synced: 21:28:16</span>
+          <span class="ml mc">══════════════════════════════════</span>
+          <span class="ml md">📊 Indicators:</span>
+          <span class="ml md">&nbsp;&nbsp;• MACD (15m): -0.00007779</span>
+          <span class="ml md">&nbsp;&nbsp;• EMA (30m): &nbsp;0.09456452</span>
+          <span class="ml md">&nbsp;&nbsp;• SAR (1h): &nbsp;&nbsp;0.09279140</span>
+          <span class="ml mc">══════════════════════════════════</span>
+          <span class="ml mw">⏳ [07] Analyzing conditions...</span>
+          <span class="ml"><span class="mc">▶ </span><span class="cursor"></span></span>
+        </div>
+      </div>
+      <p class="monitor-note">07 Buyer monitors continuously. When all conditions align, it enters the trade instantly and hands off to 07 Seller.</p>
+    </div>
+
+    <div class="monitor-wrap">
+      <div class="monitor-label">07 Seller — Dual Trailing Stop Active</div>
+      <div class="monitor-box">
+        <div class="monitor-header">
+          <div class="dot r"></div><div class="dot y"></div><div class="dot g"></div>
+          <span class="monitor-title">Smart Monitor | DOGEUSDT | SELLER AGENT</span>
+        </div>
+        <div class="monitor-body">
+          <span class="ml mc">══════════════════════════════════</span>
+          <span class="ml mg">--- ACTIVE TRADE ---</span>
+          <span class="ml mg">✅ Position: Active</span>
+          <span class="ml mg">📈 Current Price: 0.09402 USDT</span>
+          <span class="ml mg">📥 Entry Price: &nbsp;0.09400 USDT</span>
+          <span class="ml mw">🚀 Highest Price: 0.09408 USDT</span>
+          <span class="ml mg">💰 Current Profit: +0.02%</span>
+          <span class="ml mc">══════════════════════════════════</span>
+          <span class="ml mw">🛡️ Trailing Stop 1: 0.09268898</span>
+          <span class="ml mg">🛡️ Trailing Stop 2: 0.09257472 <span style="color:var(--cyan);">(Active)</span></span>
+          <span class="ml mc">══════════════════════════════════</span>
+          <span class="ml mg">📢 Decision: BUY confirmed ✅</span>
+          <span class="ml md">👀 [Watcher] Monitoring next trigger...</span>
+          <span class="ml md">⏱️ [Collector] Updated: 22:56:43</span>
+          <span class="ml"><span class="mc">▶ </span><span class="cursor"></span></span>
+        </div>
+      </div>
+      <p class="monitor-note">07 Seller activates after every entry. Dual-trailing stop logic protects capital while letting profits run as far as possible.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 07 IN ACTION -->
+<section class="alt">
+  <div class="sec-header">
+    <div class="eyebrow">07 In Action</div>
+    <h2 class="sec-title">07: An <span>8B Sovereign Model</span> trained on proprietary market intelligence.</h2>
+    <p class="sec-sub">Fine-tuned on 1M+ tokens of curated system data to master its own logic — then fed ~8K tokens of live market data + engineering prompt every analysis cycle. Buyer and Seller each run a different prompt.</p>
+  </div>
+  <div class="analysis-box">
+    <div class="analysis-header">
+      <div class="analysis-title">07 Buyer · Live Analysis — DOGEUSDT · 2026-03-05 22:17 UTC</div>
+      <div class="analysis-badge">DECISION: WAIT</div>
+    </div>
+    <div class="analysis-body">
+      <div class="analysis-col">
+        <div class="analysis-col-title">// Market Data</div>
+        <div class="analysis-item"><span class="ai-label">Current Price</span><span class="ai-val">0.09367 USDT</span></div>
+        <div class="analysis-item"><span class="ai-label">4H Trend</span><span class="ai-val red">Bearish</span></div>
+        <div class="analysis-item"><span class="ai-label">1H Trend</span><span class="ai-val gold">Sideways / Weak</span></div>
+        <div class="analysis-item"><span class="ai-label">15M Trend</span><span class="ai-val red">Slight Weakness</span></div>
+        <div class="analysis-item"><span class="ai-label">5M Execution</span><span class="ai-val gold">Range-bound</span></div>
+        <div class="analysis-item"><span class="ai-label">Support PSL</span><span class="ai-val">0.09392</span></div>
+        <div class="analysis-item"><span class="ai-label">Rebound from PSL</span><span class="ai-val red">-0.27%</span></div>
+        <div class="analysis-item"><span class="ai-label">Resistance RSP</span><span class="ai-val">0.10275</span></div>
+      </div>
+      <div class="analysis-col">
+        <div class="analysis-col-title">// Decision Logic</div>
+        <div class="analysis-item"><span class="ai-label">Parabolic SAR (5m)</span><span class="ai-val red">0.09439 — Resistance</span></div>
+        <div class="analysis-item"><span class="ai-label">OBV (15m)</span><span class="ai-val red">485M — Declining</span></div>
+        <div class="analysis-item"><span class="ai-label">ROC (30m)</span><span class="ai-val gold">+0.13% — Very Weak</span></div>
+        <div class="analysis-item"><span class="ai-label">Memory (Last 3)</span><span class="ai-val gold">All → WAIT</span></div>
+        <div class="analysis-item"><span class="ai-label">Last Trade Lesson</span><span class="ai-val gold">Avoid early entry</span></div>
+        <div class="analysis-item"><span class="ai-label">Conditions Met</span><span class="ai-val red">None (A–G)</span></div>
+        <div class="analysis-item"><span class="ai-label">Bull Trap Risk</span><span class="ai-val red">High</span></div>
+        <div class="analysis-item"><span class="ai-label">Confidence</span><span class="ai-val red">Low — No Entry</span></div>
+      </div>
+    </div>
+    <div class="decision-bar">
+      <span class="decision-label">Final Decision</span>
+      <span class="decision-val">⏳ WAIT</span>
+      <span class="decision-note">Price broke below PSL. No confirmed reversal. Monitoring for next trigger.</span>
+    </div>
+  </div>
+</section>
+
+<!-- 07 TOOLBOX -->
+<section>
+  <div class="sec-header">
+    <div class="eyebrow">07 · The Smart Trader's Toolbox</div>
+    <h2 class="sec-title">Not just a trading agent.<br><span>A complete intelligence layer.</span></h2>
+    <p class="sec-sub">07 doesn't just trade for you — it trades based on the strategy YOU define. And it teaches you along the way.</p>
+  </div>
+  <div class="steps-4">
+      <span class="step-icon">🤖</span>
+      <div class="step-title"><span>Automated Agent</span></div>
+      <p class="step-desc">Trades autonomously in your private Docker environment — executing your strategy, not ours. You define the indicators, timeframes, and risk. 07 executes.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">②</div>
+      <span class="step-icon">🧠</span>
+      <div class="step-title"><span>Advisor & Validator</span></div>
+      <p class="step-desc">Use 07 as a second opinion for your manual trades. Its multi-timeframe analysis and memory logic gives you the confidence — or the warning — before you act.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">③</div>
+      <span class="step-icon">🔔</span>
+      <div class="step-title"><span>Smart Market Alert</span></div>
+      <p class="step-desc">07 monitors the market 24/7. The moment conditions align with your strategy, you get an instant Telegram alert — buy signal, entry price, and reasoning included.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">④</div>
+      <span class="step-icon">📚</span>
+      <div class="step-title"><span>Educational Tool</span></div>
+      <p class="step-desc">Every decision 07 makes comes with a full analysis — why it waited, why it entered, what the indicators said. You don't just profit. You learn how markets work.</p>
+    </div>
+  </div>
+</section>
+
+<!-- TELEGRAM ALERTS -->
+<section class="alt">
+  <div class="sec-header">
+    <div class="eyebrow">// Real-Time Telegram Alerts · Every trade, every detail.</div>
+    <h2 class="sec-title">Every move.<br><span>Instant notification.</span></h2>
+    <p class="sec-sub">Buy, sell, trailing stop, or loss — every executed trade arrives on your Telegram with full details, instantly.</p>
+  </div>
+  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border);border:1px solid var(--border);">
+
+    <!-- Example 1: BUY + SELL profit -->
+    <div style="background:var(--deep);padding:24px 20px;">
+      <div style="font-family:'Space Mono',monospace;font-size:0.58rem;color:var(--cyan);letter-spacing:2px;margin-bottom:14px;">// BUY + SELL · PROFIT</div>
+      <div style="font-family:'Space Mono',monospace;font-size:0.68rem;line-height:2;">
+        <span style="display:block;color:var(--gray);">Mar 5 · 09:12 AM</span>
+        <span style="display:block;color:var(--green);">✅ BUY — DOGEUSDT</span>
+        <span style="display:block;color:var(--gray);">&nbsp;&nbsp;Price: 0.09110</span>
+        <span style="display:block;color:var(--gray);">&nbsp;&nbsp;Qty: 17.0</span>
+        <span style="display:block;color:var(--gray);margin-top:8px;">Mar 5 · 11:37 AM</span>
+        <span style="display:block;color:#f87171;">🔥 SELL — DOGEUSDT</span>
+        <span style="display:block;color:var(--gray);">&nbsp;&nbsp;Entry: 0.09110</span>
+        <span style="display:block;color:var(--gray);">&nbsp;&nbsp;Exit:  0.09371</span>
+        <span style="display:block;color:var(--green);font-weight:700;margin-top:4px;">Profit: +2.86%</span>
+      </div>
+    </div>
+
+    <!-- Example 2: BUY + TRAILING profit -->
+    <div style="background:var(--deep);padding:24px 20px;">
+      <div style="font-family:'Space Mono',monospace;font-size:0.58rem;color:var(--cyan);letter-spacing:2px;margin-bottom:14px;">// BUY + TRAILING · PROFIT</div>
+      <div style="font-family:'Space Mono',monospace;font-size:0.68rem;line-height:2;">
+        <span style="display:block;color:var(--gray);">Mar 4 · 4:59 PM</span>
+        <span style="display:block;color:var(--green);">✅ BUY — DOGEUSDT</span>
+        <span style="display:block;color:var(--gray);">&nbsp;&nbsp;Price: 0.09512</span>
+        <span style="display:block;color:var(--gray);">&nbsp;&nbsp;Qty: 16.0</span>
+        <span style="display:block;color:var(--gray);margin-top:8px;">Mar 4 · 6:19 PM</span>
+        <span style="display:block;color:var(--gold);">🛡️ TRAILING STOP</span>
+        <span style="display:block;color:var(--gray);">&nbsp;&nbsp;Entry: 0.09512</span>
+        <span style="display:block;color:var(--gray);">&nbsp;&nbsp;Exit:  0.09829</span>
+        <span style="display:block;color:var(--green);font-weight:700;margin-top:4px;">Profit: +3.33%</span>
+      </div>
+    </div>
+
+    <!-- Example 3: BUY + SELL small loss -->
+    <div style="background:var(--deep);padding:24px 20px;">
+      <div style="font-family:'Space Mono',monospace;font-size:0.58rem;color:var(--cyan);letter-spacing:2px;margin-bottom:14px;">// BUY + SELL · LOSS</div>
+      <div style="font-family:'Space Mono',monospace;font-size:0.68rem;line-height:2;">
+        <span style="display:block;color:var(--gray);">Mar 5 · 12:41 PM</span>
+        <span style="display:block;color:var(--green);">✅ BUY — DOGEUSDT</span>
+        <span style="display:block;color:var(--gray);">&nbsp;&nbsp;Price: 0.09748</span>
+        <span style="display:block;color:var(--gray);">&nbsp;&nbsp;Qty: 16.0</span>
+        <span style="display:block;color:var(--gray);margin-top:8px;">Mar 5 · 1:26 PM</span>
+        <span style="display:block;color:#f87171;">🔥 SELL — DOGEUSDT</span>
+        <span style="display:block;color:var(--gray);">&nbsp;&nbsp;Entry: 0.09748</span>
+        <span style="display:block;color:var(--gray);">&nbsp;&nbsp;Exit:  0.09737</span>
+        <span style="display:block;color:#f87171;font-weight:700;margin-top:4px;">Profit: -0.11%</span>
+      </div>
+    </div>
+
+    <!-- Example 4: BUY + TRAILING loss -->
+    <div style="background:var(--deep);padding:24px 20px;">
+      <div style="font-family:'Space Mono',monospace;font-size:0.58rem;color:var(--cyan);letter-spacing:2px;margin-bottom:14px;">// BUY + TRAILING · LOSS</div>
+      <div style="font-family:'Space Mono',monospace;font-size:0.68rem;line-height:2;">
+        <span style="display:block;color:var(--gray);">Mar 4 · 9:34 PM</span>
+        <span style="display:block;color:var(--green);">✅ BUY — DOGEUSDT</span>
+        <span style="display:block;color:var(--gray);">&nbsp;&nbsp;Price: 0.10254</span>
+        <span style="display:block;color:var(--gray);">&nbsp;&nbsp;Qty: 14.0</span>
+        <span style="display:block;color:var(--gray);margin-top:8px;">Mar 4 · 10:57 PM</span>
+        <span style="display:block;color:var(--gold);">🛡️ TRAILING STOP</span>
+        <span style="display:block;color:var(--gray);">&nbsp;&nbsp;Entry: 0.10254</span>
+        <span style="display:block;color:var(--gray);">&nbsp;&nbsp;Exit:  0.10189</span>
+        <span style="display:block;color:#f87171;font-weight:700;margin-top:4px;">Profit: -0.63%</span>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- CTA -->
+<div class="cta-section">
+  <div>
+    <h3 class="cta-title">Trade smarter —<br><span>on your own terms.</span></h3>
+    <p class="cta-sub">Join the private beta · Your strategy · Your keys · Your control</p>
+  </div>
+  <div class="cta-btns">
+    <a href="#" class="btn-primary">Request Trial Access →</a>
+    <a href="#" class="btn-ghost">Meet MaDaZ-AGI · BuddY ↗</a>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">MaDaZ <span>AI</span></div>
+  <ul class="footer-links">
+    <li><a href="#">Home</a></li>
+    <li><a href="#">MaDaZ-AGI</a></li>
+    <li><a href="#">Investors</a></li>
+    <li><a href="#">GitHub</a></li>
+    <li><a href="#">LinkedIn</a></li>
+  </ul>
+  <div class="footer-right">© 2026 MADAZAI LTD · London, UK</div>
+</footer>
+
+<div class="page-indicator">MaDaZ-AI · 02 / 05</div>
+
+</body>
+</html>
