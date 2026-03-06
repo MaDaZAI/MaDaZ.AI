@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MaDaZ AI — Founder & Investors</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=Space+Mono:wght@400;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --black: #020408;
+  --deep: #06080f;
+  --gold: #f0c040;
+  --white: #f0f4ff;
+  --gray: #7a8899;
+  --border: rgba(240,192,64,0.1);
+  --border2: rgba(240,192,64,0.22);
+  --green: #4ade80;
+  --red: #f87171;
+  --yellow: #fbbf24;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+
+body {
+  background: var(--black);
+  color: var(--white);
+  font-family: 'Inter', sans-serif;
+  overflow-x: hidden;
+}
+
+body::before {
+  content:'';
+  position:fixed; inset:0;
+  background-image:
+    linear-gradient(rgba(240,192,64,0.018) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(240,192,64,0.018) 1px, transparent 1px);
+  background-size: 80px 80px;
+  pointer-events:none; z-index:0;
+}
+
+/* NAV */
+nav {
+  position:fixed; top:0; left:0; right:0; z-index:100;
+  display:flex; justify-content:space-between; align-items:center;
+  padding:18px 60px;
+  background:rgba(2,4,8,0.92);
+  backdrop-filter:blur(24px);
+  border-bottom:1px solid var(--border);
+}
+.nav-logo { font-family:'Syne',sans-serif; font-weight:800; font-size:1.3rem; letter-spacing:3px; text-transform:uppercase; }
+.nav-logo span { color:var(--gold); }
+.nav-links { display:flex; gap:36px; list-style:none; }
+.nav-links a {
+  color:var(--gray); text-decoration:none; font-size:0.72rem;
+  letter-spacing:2px; text-transform:uppercase;
+  font-family:'Space Mono',monospace; transition:color 0.3s; position:relative;
+}
+.nav-links a::after {
+  content:''; position:absolute; bottom:-4px; left:0; right:0;
+  height:1px; background:var(--gold); transform:scaleX(0); transition:transform 0.3s;
+}
+.nav-links a:hover { color:var(--white); }
+.nav-links a:hover::after, .nav-links a.active::after { transform:scaleX(1); }
+.nav-links a.active { color:var(--white); }
+.nav-cta {
+  background:transparent; border:1px solid var(--gold); color:var(--gold);
+  padding:9px 22px; font-family:'Space Mono',monospace; font-size:0.72rem;
+  letter-spacing:1.5px; cursor:pointer; transition:all 0.3s; text-transform:uppercase;
+}
+.nav-cta:hover { background:var(--gold); color:var(--black); }
+
+/* HERO */
+.hero {
+  min-height:100vh;
+  display:flex; flex-direction:column; justify-content:center;
+  padding:140px 60px 80px;
+  position:relative; z-index:1;
+  border-bottom:1px solid var(--border);
+}
+
+.hero-glow {
+  position:absolute; top:0; right:-100px;
+  width:700px; height:700px; border-radius:50%;
+  background:radial-gradient(circle, rgba(240,192,64,0.04) 0%, transparent 65%);
+  pointer-events:none;
+}
+
+.hero-inner {
+  max-width:1200px; width:100%; margin:0 auto;
+  display:grid; grid-template-columns:1fr 1fr; gap:80px; align-items:center;
+}
+
+.hero-eyebrow {
+  font-family:'Space Mono',monospace; font-size:0.62rem;
+  letter-spacing:3px; color:var(--gold); text-transform:uppercase;
+  display:flex; align-items:center; gap:12px; margin-bottom:20px;
+}
+.hero-eyebrow::before { content:''; width:30px; height:1px; background:var(--gold); }
+
+.hero h1 {
+  font-family:'Syne',sans-serif; font-weight:800;
+  font-size:clamp(2rem,3vw,3rem); line-height:1.05;
+  letter-spacing:-1px; margin-bottom:0;
+}
+.hero h1 em {
+  font-style:normal; display:block;
+  font-size:clamp(2.6rem,4.5vw,4.4rem);
+  letter-spacing:-2px; line-height:1.0;
+  color:var(--white); margin-bottom:10px;
+}
+.hero h1 span { color:var(--gold); }
+
+.hero-sub {
+  font-family:'Space Mono',monospace; font-size:0.82rem;
+  color:rgba(240,192,64,0.7); letter-spacing:1px; margin-bottom:22px; margin-top:16px;
+}
+
+.hero-desc {
+  font-size:0.92rem; color:rgba(240,244,255,0.55);
+  line-height:1.85; font-weight:300;
+}
+
+/* MANIFESTO COUNTERS */
+.manifesto-grid {
+  display:grid; grid-template-columns:1fr 1fr; gap:1px;
+  background:var(--border2); border:1px solid var(--border2);
+}
+
+.manifesto-card {
+  background:var(--deep); padding:28px 24px;
+  position:relative; overflow:hidden; transition:background 0.3s;
+}
+.manifesto-card:hover { background:rgba(240,192,64,0.04); }
+.manifesto-card::before {
+  content:''; position:absolute; top:0; left:0; right:0; height:2px;
+  background:var(--gold); transform:scaleX(0); transition:transform 0.5s;
+}
+.manifesto-card:hover::before { transform:scaleX(1); }
+
+.mc-num {
+  font-family:'Syne',sans-serif; font-weight:800;
+  font-size:2.4rem; color:var(--gold); line-height:1;
+  margin-bottom:6px; letter-spacing:-1px;
+}
+.mc-label {
+  font-family:'Space Mono',monospace; font-size:0.6rem;
+  color:var(--gray); letter-spacing:1.5px; text-transform:uppercase;
+  line-height:1.5;
+}
+
+/* SECTIONS */
+section { padding:80px 60px; position:relative; z-index:1; }
+section.alt { background:rgba(240,192,64,0.01); border-top:1px solid var(--border); border-bottom:1px solid var(--border); }
+
+.sec-eyebrow {
+  font-family:'Space Mono',monospace; font-size:0.62rem;
+  letter-spacing:3px; color:var(--gold); text-transform:uppercase;
+  display:flex; align-items:center; gap:12px; margin-bottom:14px;
+}
+.sec-eyebrow::before { content:''; width:30px; height:1px; background:var(--gold); }
+
+.sec-title {
+  font-family:'Syne',sans-serif; font-weight:800;
+  font-size:clamp(1.6rem,2.5vw,2.2rem); color:var(--white);
+  margin-bottom:8px; letter-spacing:-0.5px;
+}
+.sec-title span { color:var(--gold); }
+.sec-sub { font-size:0.88rem; color:rgba(240,244,255,0.5); line-height:1.75; font-weight:300; max-width:620px; }
+
+/* BUILDER */
+.builder-grid {
+  display:grid; grid-template-columns:1fr 1.7fr; gap:48px;
+  align-items:start; margin-top:48px;
+}
+
+.builder-card {
+  background:rgba(240,192,64,0.04); border:1px solid var(--border2);
+  padding:32px; height:100%;
+}
+
+.builder-initial {
+  font-family:'Syne',sans-serif; font-weight:800;
+  font-size:4.5rem; color:var(--gold); line-height:1;
+  letter-spacing:-2px; margin-bottom:14px;
+}
+
+.builder-title {
+  font-family:'Space Mono',monospace; font-size:0.6rem;
+  letter-spacing:2px; color:var(--gray); text-transform:uppercase;
+  margin-bottom:4px;
+}
+
+.builder-role {
+  font-family:'Syne',sans-serif; font-weight:700;
+  font-size:0.95rem; color:var(--white); margin-bottom:24px;
+  border-bottom:1px solid var(--border); padding-bottom:16px;
+}
+
+.builder-badges { display:flex; flex-direction:column; gap:8px; }
+.badge {
+  display:flex; align-items:center; gap:10px;
+  background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.06);
+  padding:9px 12px; font-family:'Space Mono',monospace;
+  font-size:0.61rem; letter-spacing:0.5px; color:rgba(240,244,255,0.65);
+  transition:all 0.3s;
+}
+.badge:hover { border-color:rgba(240,192,64,0.3); color:var(--white); }
+.badge-dot { width:6px; height:6px; border-radius:50%; background:var(--green); flex-shrink:0; }
+.badge-dot.pending { background:var(--yellow); animation:pendingPulse 2s ease-in-out infinite; }
+@keyframes pendingPulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+.builder-content { display:flex; flex-direction:column; gap:20px; }
+
+.builder-block {
+  border-left:2px solid rgba(240,192,64,0.18); padding:18px 22px;
+  background:rgba(240,192,64,0.02); transition:all 0.3s;
+}
+.builder-block:hover {
+  border-left-color:var(--gold);
+  background:rgba(240,192,64,0.05);
+}
+
+.bb-label {
+  font-family:'Space Mono',monospace; font-size:0.58rem;
+  letter-spacing:2px; color:var(--gold); text-transform:uppercase;
+  margin-bottom:6px;
+}
+.bb-title {
+  font-family:'Syne',sans-serif; font-weight:700;
+  font-size:0.95rem; color:var(--white); margin-bottom:7px;
+}
+.bb-desc { font-size:0.82rem; color:rgba(240,244,255,0.58); line-height:1.75; }
+.bb-desc strong { color:var(--white); font-weight:500; }
+
+.proof-bar {
+  background:rgba(240,192,64,0.06); border:1px solid var(--border2);
+  padding:20px 24px; display:flex; align-items:center; gap:18px;
+}
+.proof-icon { font-size:1.8rem; flex-shrink:0; }
+.proof-text {
+  font-family:'Syne',sans-serif; font-weight:700;
+  font-size:0.95rem; color:var(--white); line-height:1.5;
+}
+.proof-text span { color:var(--gold); }
+.proof-sub {
+  font-size:0.72rem; color:var(--gray); margin-top:4px;
+  font-family:'Space Mono',monospace; letter-spacing:0.5px;
+}
+
+/* OPPORTUNITY */
+.opp-grid {
+  display:grid; grid-template-columns:1fr 1fr; gap:40px;
+  margin-top:48px;
+}
+
+.market-frame {
+  background:rgba(6,8,15,0.95); border:1px solid var(--border);
+  padding:28px; margin-bottom:20px;
+}
+.mf-label {
+  font-family:'Space Mono',monospace; font-size:0.58rem;
+  color:var(--gold); letter-spacing:2px; text-transform:uppercase;
+  margin-bottom:14px; display:flex; align-items:center; gap:8px;
+}
+.mf-label::after { content:''; flex:1; height:1px; background:rgba(240,192,64,0.15); }
+
+.mf-item {
+  display:flex; justify-content:space-between; align-items:baseline;
+  padding:9px 0; border-bottom:1px solid rgba(255,255,255,0.04);
+  font-family:'Space Mono',monospace; font-size:0.67rem;
+}
+.mf-item:last-child { border-bottom:none; }
+.mf-key { color:var(--gray); }
+.mf-val { color:var(--white); }
+.mf-val.gold { color:var(--gold); }
+.mf-val.green { color:var(--green); }
+.mf-val.red { color:var(--red); }
+
+.gap-statement {
+  background:rgba(240,192,64,0.04); border:1px solid var(--border2);
+  padding:18px 22px;
+}
+.gap-title {
+  font-family:'Syne',sans-serif; font-weight:700;
+  font-size:0.88rem; color:var(--gold); margin-bottom:7px;
+}
+.gap-desc { font-size:0.81rem; color:rgba(240,244,255,0.58); line-height:1.7; }
+
+.products-stack { display:flex; flex-direction:column; gap:10px; }
+
+.product-card {
+  background:var(--deep); border:1px solid rgba(240,192,64,0.13);
+  padding:24px 22px; transition:all 0.3s;
+  display:grid; grid-template-columns:auto 1fr auto; gap:14px; align-items:center;
+}
+.product-card:hover { border-color:var(--gold); background:rgba(240,192,64,0.04); }
+
+.product-num {
+  font-family:'Syne',sans-serif; font-weight:800; font-size:2rem;
+  color:rgba(240,192,64,0.1); line-height:1; transition:color 0.3s; min-width:36px;
+}
+.product-card:hover .product-num { color:rgba(240,192,64,0.28); }
+
+.product-name {
+  font-family:'Syne',sans-serif; font-weight:700;
+  font-size:0.95rem; color:var(--white); margin-bottom:5px;
+}
+.product-desc { font-size:0.8rem; color:var(--gray); line-height:1.5; }
+
+.product-status {
+  font-family:'Space Mono',monospace; font-size:0.56rem;
+  letter-spacing:1.5px; padding:4px 9px; text-transform:uppercase; white-space:nowrap;
+}
+.status-live { color:var(--green); background:rgba(74,222,128,0.08); border:1px solid rgba(74,222,128,0.22); }
+.status-dev { color:var(--yellow); background:rgba(251,191,36,0.08); border:1px solid rgba(251,191,36,0.22); }
+.status-rd { color:var(--gray); background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); }
+
+/* ASK */
+.ask-grid {
+  display:grid; grid-template-columns:repeat(2,1fr);
+  gap:1px; background:var(--border); border:1px solid var(--border);
+  margin-top:48px;
+}
+
+.ask-card {
+  background:var(--deep); padding:32px 28px;
+  position:relative; overflow:hidden; transition:background 0.3s;
+}
+.ask-card:hover { background:rgba(240,192,64,0.03); }
+.ask-card::before {
+  content:''; position:absolute; top:0; left:0; right:0; height:2px;
+  background:var(--gold); transform:scaleX(0); transition:transform 0.4s;
+}
+.ask-card:hover::before { transform:scaleX(1); }
+
+.ask-icon { font-size:1.5rem; display:block; margin-bottom:14px; }
+.ask-title {
+  font-family:'Syne',sans-serif; font-weight:700;
+  font-size:0.92rem; color:var(--white); margin-bottom:9px;
+}
+.ask-desc { font-size:0.79rem; color:var(--gray); line-height:1.7; }
+.ask-points { margin-top:12px; display:flex; flex-direction:column; gap:6px; }
+.ask-point {
+  font-family:'Space Mono',monospace; font-size:0.61rem;
+  color:rgba(240,244,255,0.5); display:flex; align-items:center; gap:8px;
+}
+.ask-point::before { content:'→'; color:var(--gold); flex-shrink:0; }
+
+/* CONTACT */
+.contact-section {
+  padding:70px 60px; position:relative; z-index:1;
+  border-top:1px solid var(--border);
+}
+
+.contact-inner {
+  max-width:1200px; margin:0 auto;
+  display:flex; justify-content:space-between; align-items:center; gap:40px;
+}
+
+.contact-title {
+  font-family:'Syne',sans-serif; font-weight:800;
+  font-size:clamp(1.6rem,2.5vw,2.1rem); margin-bottom:8px;
+}
+.contact-title span { color:var(--gold); }
+.contact-sub {
+  font-family:'Space Mono',monospace; font-size:0.68rem;
+  color:var(--gray); letter-spacing:1px;
+}
+
+.contact-btns { display:flex; gap:14px; flex-shrink:0; }
+
+.contact-btn {
+  display:flex; flex-direction:column; align-items:center; gap:6px;
+  text-decoration:none; transition:all 0.3s;
+}
+
+.btn-face {
+  display:flex; align-items:center; gap:10px;
+  padding:14px 28px; font-family:'Space Mono',monospace;
+  font-size:0.72rem; letter-spacing:1.5px; text-transform:uppercase;
+  transition:all 0.3s;
+}
+
+.btn-gmail .btn-face {
+  background:var(--gold); color:var(--black); font-weight:700;
+}
+.btn-gmail:hover .btn-face { background:var(--white); transform:translateY(-2px); }
+
+.btn-proton .btn-face {
+  background:transparent; color:var(--gold);
+  border:1px solid var(--gold);
+}
+.btn-proton:hover .btn-face { background:rgba(240,192,64,0.08); transform:translateY(-2px); }
+
+.btn-email-text {
+  font-family:'Space Mono',monospace; font-size:0.57rem;
+  color:var(--gray); letter-spacing:0.5px;
+}
+
+/* FOOTER */
+footer {
+  padding:28px 60px; border-top:1px solid var(--border);
+  display:flex; justify-content:space-between; align-items:center;
+  position:relative; z-index:1;
+}
+.footer-logo { font-family:'Syne',sans-serif; font-weight:800; font-size:0.95rem; letter-spacing:3px; text-transform:uppercase; }
+.footer-logo span { color:var(--gold); }
+.footer-links { display:flex; gap:28px; list-style:none; }
+.footer-links a { color:var(--gray); text-decoration:none; font-family:'Space Mono',monospace; font-size:0.65rem; letter-spacing:1.5px; text-transform:uppercase; transition:color 0.3s; }
+.footer-links a:hover { color:var(--white); }
+.footer-right { font-family:'Space Mono',monospace; font-size:0.62rem; color:var(--gray); }
+
+.page-indicator {
+  position:fixed; bottom:28px; right:28px;
+  background:rgba(2,4,8,0.92); border:1px solid var(--border);
+  padding:8px 16px; font-family:'Space Mono',monospace;
+  font-size:0.6rem; color:var(--gold); letter-spacing:2px; z-index:100; text-transform:uppercase;
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">MaDaZ <span>AI</span></div>
+  <ul class="nav-links">
+    <li><a href="#">Home</a></li>
+    <li><a href="#">MaDaZ-AI-07</a></li>
+    <li><a href="#">MaDaZ-AGI-BuddY</a></li>
+    <li><a href="#" class="active">Founder & Investors</a></li>
+    <li><a href="#">Trial</a></li>
+  </ul>
+  <button class="nav-cta">Contact Us</button>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-glow"></div>
+  <div class="hero-inner">
+    <div>
+      <div class="hero-eyebrow">// Founder & Investors</div>
+      <h1>
+        <em>The Modern Builder</em>
+        Built by one. <span>Powered</span> by vision.
+      </h1>
+      <p class="hero-sub">A.E — Founder & CEO, MaDaZ-AI</p>
+      <p class="hero-desc">Empowering individual traders with AI capabilities at institutional-grade quality. Not an academic concept — a working system, built solo, running live in real markets today.</p>
+    </div>
+
+    <!-- MANIFESTO COUNTERS -->
+    <div class="manifesto-grid">
+      <div class="manifesto-card">
+        <div class="mc-num" data-target="500" data-suffix="M+">0</div>
+        <div class="mc-label">Potential Market<br>Retail Traders</div>
+      </div>
+      <div class="manifesto-card">
+        <div class="mc-num" data-target="1" data-suffix="">0</div>
+        <div class="mc-label">Unified Protocol<br>Built & Running</div>
+      </div>
+      <div class="manifesto-card">
+        <div class="mc-num" data-target="24" data-suffix="/7">0</div>
+        <div class="mc-label">Sovereign Vigilance<br>Always On</div>
+      </div>
+      <div class="manifesto-card">
+        <div class="mc-num" data-target="0" data-suffix="">—</div>
+        <div class="mc-label">Security Breaches<br>Zero Record</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PART 1 — THE BUILDER -->
+<section>
+  <div class="sec-eyebrow">Part 01 — The Builder</div>
+  <h2 class="sec-title">One person. <span>Enterprise-grade output.</span></h2>
+  <p class="sec-sub">The individual who conceived the vision, built the infrastructure, trained the models, and deployed the system — is the proof of concept.</p>
+
+  <div class="builder-grid">
+
+    <div class="builder-card">
+      <div class="builder-initial">A.E</div>
+      <div class="builder-title">// Founder & CEO</div>
+      <div class="builder-role">MaDaZ-AI · MaDaZ-AGI · BuddY</div>
+      <div class="builder-badges">
+        <div class="badge">
+          <span class="badge-dot"></span>
+          Microsoft for Startups — Accepted ✓
+        </div>
+        <div class="badge">
+          <span class="badge-dot pending"></span>
+          Google for Startups — Pending
+        </div>
+        <div class="badge">
+          <span class="badge-dot"></span>
+          3+ Years Active Trading
+        </div>
+        <div class="badge">
+          <span class="badge-dot"></span>
+          2 Years AI Systems Research
+        </div>
+        <div class="badge">
+          <span class="badge-dot"></span>
+          Built Entirely Solo — 100%
+        </div>
+        <div class="badge">
+          <span class="badge-dot"></span>
+          System Live in Real Markets ✓
+        </div>
+      </div>
+    </div>
+
+    <div class="builder-content">
+      <div class="builder-block">
+        <div class="bb-label">// Philosophy</div>
+        <div class="bb-title">Democratizing Institutional Intelligence</div>
+        <p class="bb-desc">The gap between retail and institutional trading isn't capital — it's intelligence infrastructure. MaDaZ-AI exists to close that gap: giving individual traders the same analytical depth, speed, and precision that only large desks have had access to.</p>
+      </div>
+
+      <div class="builder-block">
+        <div class="bb-label">// Domain Expertise</div>
+        <div class="bb-title">Trading + AI — Not One Without the Other</div>
+        <p class="bb-desc"><strong>3+ years of active trading</strong> means every system design decision is grounded in real market mechanics — not theory. <strong>2 years in AI systems research</strong> means the technical implementation is validated, not experimental. The combination is rare.</p>
+      </div>
+
+      <div class="builder-block">
+        <div class="bb-label">// AGI Vision 2026–2030</div>
+        <div class="bb-title">AGI Designed for Real Users — Not Academic Papers</div>
+        <p class="bb-desc">The prevailing AGI narrative is detached from user reality. MaDaZ's approach: build AGI systems around <strong>actual human workflows</strong> — configure by conversation, execute by intent, learn by context. BuddY is the first proof. More domains follow.</p>
+      </div>
+
+      <div class="builder-block">
+        <div class="bb-label">// Capital Efficiency</div>
+        <div class="bb-title">Maximum Velocity. Minimal Resources.</div>
+        <p class="bb-desc">The entire MaDaZ stack — trading agents, AGI layer, infrastructure, monitoring shell, Docker isolation — built single-handedly. This is not a prototype. It runs live, handles real capital, and scales.</p>
+      </div>
+
+      <div class="proof-bar">
+        <span class="proof-icon">⚡</span>
+        <div>
+          <div class="proof-text">A living proof: <span>one individual + AI = enterprise-grade systems.</span></div>
+          <div class="proof-sub">Not a claim. A running system. Verifiable on GitHub.</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- PART 2 — THE OPPORTUNITY -->
+<section class="alt">
+  <div class="sec-eyebrow">Part 02 — The Opportunity</div>
+  <h2 class="sec-title">The gap is real. <span>The timing is now.</span></h2>
+  <p class="sec-sub">Individual trading has exploded. AI has matured. The infrastructure to bridge them — intelligently, securely, at scale — is still being built.</p>
+
+  <div class="opp-grid">
+    <div>
+      <div class="market-frame">
+        <div class="mf-label">// Market Reality</div>
+        <div class="mf-item"><span class="mf-key">Retail traders globally</span><span class="mf-val gold">500M+</span></div>
+        <div class="mf-item"><span class="mf-key">With institutional-grade AI</span><span class="mf-val red">~0%</span></div>
+        <div class="mf-item"><span class="mf-key">AI adoption in fintech</span><span class="mf-val green">Accelerating</span></div>
+        <div class="mf-item"><span class="mf-key">No-code AI trading systems</span><span class="mf-val gold">Untapped</span></div>
+        <div class="mf-item"><span class="mf-key">MaDaZ system status</span><span class="mf-val green">Live ✓</span></div>
+      </div>
+      <div class="gap-statement">
+        <div class="gap-title">The Gap We're Closing</div>
+        <p class="gap-desc">Institutional desks have AI analysts, real-time surveillance, and multi-agent systems. Individual traders have none of that. MaDaZ-AI delivers institutional intelligence to a single trader — privately, securely, without code.</p>
+      </div>
+    </div>
+
+    <div>
+      <div style="font-family:'Space Mono',monospace;font-size:0.58rem;color:var(--gold);letter-spacing:2px;text-transform:uppercase;margin-bottom:14px;">// Product Lineup</div>
+      <div class="products-stack">
+        <div class="product-card">
+          <div class="product-num">01</div>
+          <div>
+            <div class="product-name">Live Demo Version</div>
+            <div class="product-desc">Actively tested in real markets — proven results</div>
+          </div>
+          <div class="product-status status-live">Live</div>
+        </div>
+        <div class="product-card">
+          <div class="product-num">02</div>
+          <div>
+            <div class="product-name">Advanced Trained Version</div>
+            <div class="product-desc">Improved strategies, deeper AI integration</div>
+          </div>
+          <div class="product-status status-dev">In Dev</div>
+        </div>
+        <div class="product-card">
+          <div class="product-num">03</div>
+          <div>
+            <div class="product-name">Plus Edition (Pro)</div>
+            <div class="product-desc">High-performance version for professionals</div>
+          </div>
+          <div class="product-status status-rd">R&D</div>
+        </div>
+        <div class="product-card">
+          <div class="product-num">04</div>
+          <div>
+            <div class="product-name">MaDaZ-AGI · BuddY</div>
+            <div class="product-desc">Multi-domain AGI — finance, content, education & beyond</div>
+          </div>
+          <div class="product-status status-live">Live</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PART 3 — THE ASK -->
+<section>
+  <div class="sec-eyebrow">Part 03 — The Ask</div>
+  <h2 class="sec-title">Strategic partnership <span>for accelerated growth.</span></h2>
+  <p class="sec-sub">Not just capital. Partners who accelerate what's already working — technically, commercially, and operationally.</p>
+
+  <div class="ask-grid">
+    <div class="ask-card">
+      <span class="ask-icon">☁️</span>
+      <div class="ask-title">Technical & Cloud Partners</div>
+      <p class="ask-desc">Collaboration in R&D, system integration, and access to scalable cloud infrastructure for model training and deployment at scale.</p>
+      <div class="ask-points">
+        <span class="ask-point">Advanced model training infrastructure</span>
+        <span class="ask-point">Cloud scaling beyond current capacity</span>
+        <span class="ask-point">System integration & API partnerships</span>
+      </div>
+    </div>
+    <div class="ask-card">
+      <span class="ask-icon">💰</span>
+      <div class="ask-title">Investors</div>
+      <p class="ask-desc">Funding to accelerate product development, expand the team, and capture the market opportunity before the window closes.</p>
+      <div class="ask-points">
+        <span class="ask-point">Product development acceleration</span>
+        <span class="ask-point">Team expansion — AI & DevOps</span>
+        <span class="ask-point">Market entry & user acquisition</span>
+      </div>
+    </div>
+    <div class="ask-card">
+      <span class="ask-icon">📣</span>
+      <div class="ask-title">Market Access & Co-Marketing</div>
+      <p class="ask-desc">Access to your user base for co-marketing, joint projects, or product integrations to accelerate growth and validate product–market fit.</p>
+      <div class="ask-points">
+        <span class="ask-point">Co-marketing with aligned platforms</span>
+        <span class="ask-point">Distribution partnerships</span>
+        <span class="ask-point">Beta tester communities</span>
+      </div>
+    </div>
+    <div class="ask-card">
+      <span class="ask-icon">🛡️</span>
+      <div class="ask-title">Operational & Regulatory Guidance</div>
+      <p class="ask-desc">Guidance on scaling infrastructure, regulatory compliance, and best-practice security standards for fintech and AI systems.</p>
+      <div class="ask-points">
+        <span class="ask-point">Regulatory compliance — fintech & AI</span>
+        <span class="ask-point">Security standards & auditing</span>
+        <span class="ask-point">Scaling infrastructure best practices</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<div class="contact-section">
+  <div class="contact-inner">
+    <div>
+      <h3 class="contact-title">Ready to build<br><span>the future together?</span></h3>
+      <p class="contact-sub">Investors · Partners · Contributors · Beta Testers</p>
+    </div>
+    <div class="contact-btns">
+      <a href="/cdn-cgi/l/email-protection#2f4c40415b4e4c5b01424e4b4e554e466f48424e4643014c4042" class="contact-btn btn-gmail">
+        <div class="btn-face">✉️&nbsp; Gmail</div>
+        <span class="btn-email-text"><span class="__cf_email__" data-cfemail="62010d0c160301164c0f03060318030b22050f030b0e4c010d0f">[email&#160;protected]</span></span>
+      </a>
+      <a href="/cdn-cgi/l/email-protection#026f636663782c63656b4272706d766d6c2c6f67" class="contact-btn btn-proton">
+        <div class="btn-face">🔒&nbsp; ProtonMail</div>
+        <span class="btn-email-text"><span class="__cf_email__" data-cfemail="7f121e1b1e05511e18163f0f0d100b101151121a">[email&#160;protected]</span></span>
+      </a>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">MaDaZ <span>AI</span></div>
+  <ul class="footer-links">
+    <li><a href="#">Home</a></li>
+    <li><a href="#">MaDaZ-AI-07</a></li>
+    <li><a href="#">MaDaZ-AGI-BuddY</a></li>
+    <li><a href="#">GitHub</a></li>
+    <li><a href="#">LinkedIn</a></li>
+  </ul>
+  <div class="footer-right">© 2026 MADAZAI LTD · London, UK</div>
+</footer>
+
+<div class="page-indicator">Founder & Investors · 04 / 05</div>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+// Count-up animation
+function countUp(el) {
+  const target = parseInt(el.dataset.target);
+  const suffix = el.dataset.suffix || '';
+  if (target === 0) { el.textContent = '0'; return; }
+  const duration = 1800;
+  const step = Math.ceil(duration / target);
+  let current = 0;
+  const timer = setInterval(() => {
+    current += Math.max(1, Math.floor(target / 60));
+    if (cur
